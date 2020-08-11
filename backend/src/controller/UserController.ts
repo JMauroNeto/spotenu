@@ -4,7 +4,8 @@ import { UserBusiness } from "../business/UserBusiness";
 import { HashManager } from "../service/HashManager";
 import { UserDatabase } from "../data/UserDatabase";
 import { Authenticator } from "../service/Authenticator";
-import { SignupDTO } from "../model/User";
+import { SignupDTO, LoginDTO } from "../model/User";
+import { BaseDatabase } from "../data/BaseDatabase";
 
 export class UserController{
     private static UserBusiness = new UserBusiness(new IdGenerator, new HashManager, new UserDatabase, new Authenticator)
@@ -30,6 +31,22 @@ export class UserController{
             else{
                 res.status(200).send({message: response});
             }
+        } catch (error) {
+            res.status(error.code || 400).send({message: error.message})
+        }
+
+        await BaseDatabase.destroyConnection();
+    }
+
+    public async login(req: Request, res: Response){
+        try {
+            const {user, password} = req.body;
+
+            const input: LoginDTO = {user, password}
+
+            const token = await UserController.UserBusiness.login(input)
+
+            res.status(200).send({token})
         } catch (error) {
             res.status(error.code || 400).send({message: error.message})
         }

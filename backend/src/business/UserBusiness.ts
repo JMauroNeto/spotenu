@@ -1,10 +1,11 @@
-import { SignupDTO, User, UserType } from "../model/User";
+import { SignupDTO, User, UserType, LoginDTO } from "../model/User";
 import { InvalidParameterError } from "../error/InvalidParameterError";
 import { IdGenerator } from "../service/IdGenerator";
 import { HashManager } from "../service/HashManager";
 import { UserDatabase } from "../data/UserDatabase";
 import { Authenticator } from "../service/Authenticator";
 import { UnauthorizedError } from "../error/UnauthorizedError";
+import { NotFoundError } from "../error/NotFoundError";
 
 
 export class UserBusiness{
@@ -16,20 +17,20 @@ export class UserBusiness{
     ){}
 
     public async signup(token: string, input: SignupDTO){
-        const {name, email, password, nickname, type, description} = input
+        const {name, email, password, nickname, type, description} = input;
 
         const userType = User.stringToUserType(type);
 
         if(!name || !password || !nickname || (userType === UserType.BAND && !description)){
-            throw new InvalidParameterError("Missing parameters")
+            throw new InvalidParameterError("Missing parameters");
         }
 
         if(name.trim() === "" || password.trim() === "" || nickname.trim()==="" || (userType === UserType.BAND && description.trim()==="")){
-            throw new InvalidParameterError("You can't send blank parameters")
+            throw new InvalidParameterError("You can't send blank parameters");
         }
 
         if(userType !== UserType.BAND && description){
-            throw new InvalidParameterError("You can't send description if you're not a band")
+            throw new InvalidParameterError("You can't send description if you're not a band");
         }
 
         if(userType === UserType.ADMIN){
@@ -40,27 +41,51 @@ export class UserBusiness{
             }
 
             if(password.length<10){
-                throw new InvalidParameterError("Minimum password length for admin is 10 characters")
+                throw new InvalidParameterError("Minimum password length for admin is 10 characters");
             }
         } else{
             if(password.length<6){
-                throw new InvalidParameterError("Minimum password length is 6 characters")
+                throw new InvalidParameterError("Minimum password length is 6 characters");
             }
         }
 
         const id = this.idGenerator.generate();
 
-        const hashedPassword = await this.hashManager.hash(password)
+        const hashedPassword = await this.hashManager.hash(password);
 
-        await this.userDatabase.signup(id, name, email, hashedPassword, nickname, type, description)
+        await this.userDatabase.signup(id, name, email, hashedPassword, nickname, type, description);
 
         if(userType !== UserType.ADMIN){
-            const newToken = this.authenticator.generateToken({id, type})
+            const newToken = this.authenticator.generateToken({id, type});
 
-            return newToken    
+            return newToken;
         }
         
         return "User created successfully";
         
+    }
+
+    public async login(input: LoginDTO){
+        const {user, password} = input;
+
+        if(!user || !password){
+            throw new InvalidParameterError("Missing parameters");
+        }
+
+        const userData = await this.userDatabase.getUserByTerm(user);
+
+        if(!userData){
+            throw new NotFoundError("User not found");
+        }
+
+        const isValidPassword = await this.hashManager.compare(password, userData.getPassword());
+
+        if(!isValidPassword){
+            throw new UnauthorizedError("Invalid credentials");
+        }
+
+        const token = this.authenticator.generateToken({id: userData.getId(), type: userData.getType()});
+
+        return token;
     }
 }

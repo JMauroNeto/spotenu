@@ -21,7 +21,7 @@ export class BaseDatabase{
         return BaseDatabase.connection
     }
 
-    public async destroyConnection(){
+    public static async destroyConnection(){
         await BaseDatabase.connection.destroy();
         BaseDatabase.connection = null;
     }
