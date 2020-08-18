@@ -7,7 +7,6 @@ import { Authenticator } from "../service/Authenticator";
 import { UnauthorizedError } from "../error/UnauthorizedError";
 import { NotFoundError } from "../error/NotFoundError";
 
-
 export class UserBusiness{
     constructor(
         private idGenerator: IdGenerator,
@@ -55,7 +54,7 @@ export class UserBusiness{
 
         await this.userDatabase.signup(id, name, email, hashedPassword, nickname, type, description);
 
-        if(userType !== UserType.ADMIN){
+        if(userType !== UserType.ADMIN && userType !== UserType.BAND){
             const newToken = this.authenticator.generateToken({id, type});
 
             return newToken;
@@ -76,6 +75,10 @@ export class UserBusiness{
 
         if(!userData){
             throw new NotFoundError("User not found");
+        }
+
+        if(userData.getType()=== UserType.BAND && !userData.getIsApproved()){
+            throw new UnauthorizedError("Band not approved yet!");
         }
 
         const isValidPassword = await this.hashManager.compare(password, userData.getPassword());

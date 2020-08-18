@@ -34,8 +34,9 @@ export class UserController{
         } catch (error) {
             res.status(error.code || 400).send({message: error.message})
         }
-
-        await BaseDatabase.destroyConnection();
+        finally{
+            await BaseDatabase.destroyConnection();
+        }
     }
 
     public async login(req: Request, res: Response){
@@ -49,6 +50,9 @@ export class UserController{
             res.status(200).send({token})
         } catch (error) {
             res.status(error.code || 400).send({message: error.message})
+        }
+        finally{
+            await BaseDatabase.destroyConnection();
         }
     }
 }
