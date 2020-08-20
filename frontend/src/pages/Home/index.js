@@ -1,36 +1,44 @@
 import React from 'react';
 import styled from 'styled-components'
-import {FaSpotify} from 'react-icons/fa'
+import Presentation from '../../components/Presentation';
+import { Link } from 'react-router-dom';
+import Button from '../../components/Button';
 
-const DivApp = styled.div`
+const Wrapper = styled.div`
+  padding: 0 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   color: white;
   text-align: center;
-  background-color: black;
   height: 100vh;
+  width: 100vw;
   box-sizing: border-box;
+  background: linear-gradient(200deg,#cc6aa5,#3e91cc,#2dcca7);
+  background-size: 600% 100%;
 `
 
-const Titulo = styled.p`
-  display: inline;
-  margin: 0 12px;
-`
-
-const Header = styled.header`
+const ButtonContainer = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding: 12px;
-  font-size: 2em;
+  gap: 16px;
 `
 
 function Home(){
   
     return (
-      <DivApp>
-        <Header>
-          <FaSpotify /><Titulo>Spotenu</Titulo>
-        </Header>
-      </DivApp>
+      <Wrapper>
+        <Presentation />
+        <ButtonContainer>
+          <Link to='/login'>
+            <Button>Entrar</Button>
+          </Link>
+          <Link to='/signup'>
+            <Button>Criar conta</Button>
+          </Link>
+        </ButtonContainer>
+      </Wrapper>
     );
 }
 

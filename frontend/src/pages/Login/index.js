@@ -2,24 +2,29 @@ import React, { useState } from 'react';
 import styled from 'styled-components'
 import axios from 'axios'
 import { useForm } from '../../hooks/useForm';
+import Presentation from '../../components/Presentation';
+import Button from '../../components/Button';
+import { Link } from 'react-router-dom';
 
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
-  background-color: #1d1d1d;
+  background: linear-gradient(200deg,#cc6aa5,#3e91cc,#2dcca7);
+  background-size: 600% 100%;
   display: flex;
+  flex-direction: column;
+  color: white;
   align-items: center;
   justify-content: center;
 `
 
 const InternalDiv = styled.div`
+  margin: 40px 0;
   width: 40%;
   min-width: 300px;
   min-height: 30%;
   display: flex;
   flex-direction: column;
-  border: 2px solid #57b560;
-  background-color: #111111;
   align-items: center;
   padding-bottom: 20px;
   color: #ffffff;
@@ -36,43 +41,44 @@ const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin: 12px 0;
+
+  :last-of-type{
+    margin: 0 0 30px;
+  }
 `
 
 const Input = styled.input`
   height: 32px;
   border: none;
-  border: none;
-  border-bottom: 2px solid #111111;
+  border-bottom: 1px solid #3fc1a7;
   font-size: 0.9em;
-  background-color: #dddddd;
+  background: none;
   :focus{
     outline: none;
     transition: 0.15s all;
-    border-bottom: 2px solid #57b560;
-    box-shadow: 0px 0px 3px  #57b560;
   }
-`
-
-const Button = styled.button`
-  width: 60%;
-  height: 40px;
-  align-self: center;
-  font-size: 16px;
-  font-weight: 500;
-  border-radius: 100px;
-  border: none;
-  background-color: #57b560;
-  :hover{
-    opacity: 0.9;
-    transform: scale(1.04);
-    cursor: pointer;
+  :invalid{
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #ff5c5c;
+    box-shadow: none;
   }
-  margin: 12px;
 `
 
 const ErrorText = styled.p`
-  margin: 8px;
-  color: #700000;
+  text-align: center;
+  margin: 24px;
+  color: #ff5c5c;
+`
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: #fff;
+  margin: 24px 0;
+
+  p{
+    margin: 0;
+  }
 `
 
 function Login() {
@@ -98,12 +104,12 @@ function Login() {
 
   return (
     <Wrapper>
+      <Presentation onlyIcon />
       <InternalDiv>
-        <h2>Login</h2>
         <LoginForm onSubmit={submitForm}>
           <InputContainer>
             <label htmlFor="user">Nickname or e-mail:</label>
-            <Input type="user" id="user" placeholder="Nickname or e-mail" value={form.user} name="user" onChange={onChangeForm} required />
+            <Input autoFocus={true} type="user" id="user" placeholder="Nickname or e-mail" value={form.user} name="user" onChange={onChangeForm} required />
           </InputContainer>
           <InputContainer>
             <label htmlFor="password">Password:</label>
@@ -112,6 +118,9 @@ function Login() {
           {error && <ErrorText>{error}</ErrorText>}
           <Button>Enter</Button>
         </LoginForm>
+        <StyledLink to='/signup'>
+          <p>Clique aqui para se cadastrar</p>
+        </StyledLink>
       </InternalDiv>
     </Wrapper>
   );
