@@ -8,13 +8,13 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors({origin: true}));
+app.use(cors());
 
 app.use(express.json());
 
 app.use(routes);
 
-const server = app.listen(3000, ()=>{
+const server = app.listen(3003, ()=>{
     if (server) {
         const address = server.address() as AddressInfo;
         console.log(`Server is running in http://localhost:${address.port}`);

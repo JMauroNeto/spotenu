@@ -12,17 +12,22 @@ const StyledButton = styled.button`
   box-shadow: 0 1px 10px 0 #00000033;
   background-color: #3fc1a7;
   color: white;
-  :hover{
+  margin: 0;
+
+  :enabled:hover{
     opacity: 0.9;
     transform: scale(1.02);
     cursor: pointer;
   }
-  margin: 0;
+
+  :disabled{
+    background-color: #dedede;
+  }
 `
 
-function Button({children}){
+function Button({children, disabled}){
     return(
-        <StyledButton>
+        <StyledButton disabled={disabled}>
             {children}
         </StyledButton>
     );

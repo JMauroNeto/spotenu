@@ -5,6 +5,7 @@ import { useForm } from '../../hooks/useForm';
 import Presentation from '../../components/Presentation';
 import Button from '../../components/Button';
 import { Link } from 'react-router-dom';
+import ScaleLoader from 'react-spinners/ScaleLoader'
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -72,6 +73,13 @@ const ErrorText = styled.p`
   font-weight: bold;
 `
 
+const LoaderContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 16px 0;
+`
+
 const StyledLink = styled(Link)`
   text-decoration: none;
   color: #fff;
@@ -85,6 +93,7 @@ const StyledLink = styled(Link)`
 function Login() {
   const {form, changeFormValue} = useForm({user: '', password: ''});
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const onChangeForm = (event) => {
     const {name, value} = event.target;
@@ -95,11 +104,16 @@ function Login() {
   const submitForm = async (event) =>{
     event.preventDefault();
     try {
-        const token = await axios.post("localhost:3300/user/login", form);
+        setError('')
+        setLoading(true);
+        const token = await axios.post("http://localhost:3003/user/login", form);
+        // localStorage.setItem("token", token);
         console.log(token);
     } catch (error) {
-        // setError(error.response.data.message);
-        console.log(error);
+        setError(error.response.data.message);
+    }
+    finally{
+      setLoading(false);
     }
   }
 
@@ -110,14 +124,19 @@ function Login() {
         <LoginForm onSubmit={submitForm}>
           <InputContainer>
             <label htmlFor="user">Apelido ou E-mail:</label>
-            <Input autoFocus={true} type="user" id="user" placeholder="Apelido ou E-mail:" value={form.user} name="user" onChange={onChangeForm} required />
+            <Input autoFocus={true} type="text" id="user" placeholder="Apelido ou E-mail:" value={form.user} name="user" onChange={onChangeForm} required />
           </InputContainer>
           <InputContainer>
             <label htmlFor="password">Senha:</label>
             <Input type="password" id="password" placeholder="Senha" value={form.password} name="password" onChange={onChangeForm} required />
           </InputContainer>
           {error && <ErrorText>{error}</ErrorText>}
-          <Button>Entrar</Button>
+          {loading && 
+            <LoaderContainer>
+              <ScaleLoader color="#f5f5f5" />
+            </LoaderContainer>
+          }
+          <Button disabled={loading}>Entrar</Button>
         </LoginForm>
         <StyledLink to='/signup'>
           <p>Clique aqui para se cadastrar</p>
