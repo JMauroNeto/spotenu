@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import styled from 'styled-components'
-import axios from 'axios'
+import styled from 'styled-components';
+import axios from 'axios';
 import { useForm } from '../../hooks/useForm';
 import Presentation from '../../components/Presentation';
 import Button from '../../components/Button';
@@ -69,6 +69,7 @@ const ErrorText = styled.p`
   text-align: center;
   margin: 24px;
   color: #ff5c5c;
+  font-weight: bold;
 `
 
 const StyledLink = styled(Link)`
