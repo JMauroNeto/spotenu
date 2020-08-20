@@ -109,15 +109,15 @@ function Login() {
       <InternalDiv>
         <LoginForm onSubmit={submitForm}>
           <InputContainer>
-            <label htmlFor="user">Nickname or e-mail:</label>
-            <Input autoFocus={true} type="user" id="user" placeholder="Nickname or e-mail" value={form.user} name="user" onChange={onChangeForm} required />
+            <label htmlFor="user">Apelido ou E-mail:</label>
+            <Input autoFocus={true} type="user" id="user" placeholder="Apelido ou E-mail:" value={form.user} name="user" onChange={onChangeForm} required />
           </InputContainer>
           <InputContainer>
-            <label htmlFor="password">Password:</label>
-            <Input type="password" id="password" placeholder="Password" value={form.password} name="password" onChange={onChangeForm} required />
+            <label htmlFor="password">Senha:</label>
+            <Input type="password" id="password" placeholder="Senha" value={form.password} name="password" onChange={onChangeForm} required />
           </InputContainer>
           {error && <ErrorText>{error}</ErrorText>}
-          <Button>Enter</Button>
+          <Button>Entrar</Button>
         </LoginForm>
         <StyledLink to='/signup'>
           <p>Clique aqui para se cadastrar</p>
