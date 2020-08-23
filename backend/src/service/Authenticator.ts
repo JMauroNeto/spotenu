@@ -10,11 +10,10 @@ export class Authenticator{
     public getData(token: string): AuthenticationData{
         const payload = jwt.verify(token, process.env.JWT_KEY) as any;
 
-        return {id: payload.id, type: payload.type};
+        return {id: payload.id};
     }
 }
 
 export interface AuthenticationData{
-    id: string,
-    type: string
+    id: string
 }

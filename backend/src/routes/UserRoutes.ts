@@ -7,3 +7,4 @@ export const UserRoutes = Router();
 
 UserRoutes.post("/signup", userController.signup);
 UserRoutes.post("/login", userController.login);
+UserRoutes.post("/verify", userController.verifyIfIsAdmin);

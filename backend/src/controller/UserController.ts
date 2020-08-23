@@ -57,4 +57,16 @@ export class UserController{
             await BaseDatabase.destroyConnection();
         }
     }
+
+    public async verifyIfIsAdmin(req: Request, res: Response){
+        try {
+            const {authorization} = req.headers;
+
+            await UserController.UserBusiness.verifyIfIsAdmin(authorization);
+
+            res.sendStatus(200);
+        } catch (error) {
+            res.status(error.code || 400).send({message: error.message})
+        }
+    }
 }

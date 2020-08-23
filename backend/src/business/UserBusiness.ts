@@ -33,9 +33,9 @@ export class UserBusiness{
         }
 
         if(userType === UserType.ADMIN){
-            const userData = this.authenticator.getData(token);
+            const isAdmin = this.verifyIfIsAdmin(token);
 
-            if(User.stringToUserType(userData.type) !== UserType.ADMIN){
+            if(!isAdmin){
                 throw new UnauthorizedError("Only admins can register other admins");
             }
 
@@ -55,7 +55,7 @@ export class UserBusiness{
         await this.userDatabase.signup(id, name, email, hashedPassword, nickname, type, description);
 
         if(userType !== UserType.ADMIN && userType !== UserType.BAND){
-            const newToken = this.authenticator.generateToken({id, type});
+            const newToken = this.authenticator.generateToken({id});
 
             return newToken;
         }
@@ -87,8 +87,16 @@ export class UserBusiness{
             throw new UnauthorizedError("Invalid credentials");
         }
 
-        const token = this.authenticator.generateToken({id: userData.getId(), type: userData.getType()});
+        const token = this.authenticator.generateToken({id: userData.getId()});
 
         return token;
+    }
+
+    public async verifyIfIsAdmin(token: string){
+        const tokenData = this.authenticator.getData(token);
+
+        const userData = await this.userDatabase.getUserById(tokenData.id);
+
+        return userData.getType() === UserType.ADMIN;
     }
 }
